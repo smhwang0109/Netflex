@@ -3,10 +3,10 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<form action="" method="POST">
+<form class="mt-3" action="" method="POST">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <button class="btn btn-secondary">가입하기</button>
+    <button class="btn btn-danger">로그인</button>
 </form>
 
 {% if messages %}

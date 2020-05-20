@@ -16,7 +16,7 @@ class Movie(models.Model):
     original_language = models.CharField(max_length=100)
     poster_path = models.CharField(max_length=1000)
     backdrop_path = models.CharField(max_length=1000)
-    genres = models.ManyToManyField(Genre)
+    genres = models.ManyToManyField(Genre, related_name='genre_movies')
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
 
 class Review(models.Model):

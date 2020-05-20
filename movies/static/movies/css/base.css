@@ -12,6 +12,10 @@ body {
   font-family: 'Sunflower', sans-serif;
   margin: 0;
 }
-.card-header, .btn-danger, .card-footer{
+.card-header, .btn-danger, .badge-danger, .card-footer{
   background-color: #E50914;
+}
+
+.like-buttons:hover{
+  cursor:pointer;
 }

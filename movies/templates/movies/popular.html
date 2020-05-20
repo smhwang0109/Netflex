@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load bootstrap_pagination %}
+{% load static %}
+
+{% block css %}
+	<link rel="stylesheet" href="{% static 'movies/css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="mx-0">
+  {% if request.resolver_match.url_name == 'popular' %}
+  <h1 class="mt-5 font-weight-bold">Popular on Netflex</h1>
+  {% elif request.resolver_match.url_name == 'search' %}
+  <h1 class="mt-5 font-weight-bold">'{{ keyword }}'에 대한 검색결과({{ movies.count }})</h1>
+  {% endif %}
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in page_obj|slice:":4" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" alt="영화 포스터"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in page_obj|slice:"4:8" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" alt="영화 포스터"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in page_obj|slice:"8:12" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" alt="영화 포스터"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in page_obj|slice:"12:16" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" alt="영화 포스터"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in page_obj|slice:"16:20" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" alt="영화 포스터"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center">
+    {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
+  </div>
+
+</div>
+{% endblock %}

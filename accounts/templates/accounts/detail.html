@@ -23,38 +23,47 @@
 </div>
 <hr>
 <div class="d-flex">
-<div class="col-6">
-    <h3 class="mb-3">작성한 글 목록</h3>
-    <div class="row">
-    {% for review in user.author_reviews.all %}
-        <div class="card text-white bg-danger col-5 p-1 m-3">
-          <div class="card-body">
-            <h5 class="card-title">{{ review.title }}</h5>
-            <p class="card-subtitle mb-2 text-dark"><small>{{ review.created_at }}</small></p>
-            <hr>
-            <p class="card-text">{{ review.content|truncatechars:60 }}</p>
-            <a class="text-secondary" href="{% url 'movies:review_detail' review.movie.pk review.pk %}" class="card-link">자세히 보기</a>
-          </div>
-        </div>
-    {% endfor %}
-    </div>
-</div>
 
-<div class="col-6">
-    <h3 class="mb-3">좋아요 한 글 목록</h3>
-    <div class="row">
-    {% for review in user.like_reviews.all %}
-        <div class="card text-white bg-danger col-5 p-1 m-3">
-          <div class="card-body">
-            <h5 class="card-title">{{ review.title }}</h5>
-            <p class="card-subtitle mb-2 text-dark"><small>{{ review.created_at }}</small></p>
-            <hr>
-            <p class="card-text">{{ review.content|truncatechars:60 }}</p>
-            <a class="text-secondary" href="{% url 'movies:review_detail' review.movie.pk review.pk %}" class="card-link">자세히 보기</a>
-          </div>
+    <div class="col-6">
+        <h3 class="mb-3">작성한 글 목록</h3>
+        {% if user.author_reviews.all %}
+        <div class="row">
+            {% for review in user.author_reviews.all %}
+                <div class="card text-white bg-danger col-5 p-1 m-3">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ review.title }}</h5>
+                    <p class="card-subtitle mb-2 text-dark"><small>{{ review.created_at }}</small></p>
+                    <hr>
+                    <p class="card-text">{{ review.content|truncatechars:60 }}</p>
+                    <a class="text-secondary" href="{% url 'movies:review_detail' review.movie.pk review.pk %}" class="card-link">자세히 보기</a>
+                  </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+        {% else %}
+            <p>아직 작성한 글이 없습니다.</p>
+        {% endif %}
     </div>
-</div>
+
+    <div class="col-6">
+        <h3 class="mb-3">좋아요 한 글 목록</h3>
+        {% if user.like_reviews.all %}
+        <div class="row">
+        {% for review in user.like_reviews.all %}
+            <div class="card text-white bg-danger col-5 p-1 m-3">
+              <div class="card-body">
+                <h5 class="card-title">{{ review.title }}</h5>
+                <p class="card-subtitle mb-2 text-dark"><small>{{ review.created_at }}</small></p>
+                <hr>
+                <p class="card-text">{{ review.content|truncatechars:60 }}</p>
+                <a class="text-secondary" href="{% url 'movies:review_detail' review.movie.pk review.pk %}" class="card-link">자세히 보기</a>
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+        {% else %}
+            <p>아직 좋아요 한 글이 없습니다.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

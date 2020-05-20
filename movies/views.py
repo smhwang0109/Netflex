@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review, Comment
+from .models import Genre, Movie, Review, Comment
 from .forms import MovieForm, ReviewForm, CommentForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,35 @@ from django.http import JsonResponse
 
 
 def index(request):
+    user = request.user
+    movies = Movie.objects.order_by('-popularity')[:8]
+    context = {
+        'movies': movies,
+    }
+    if user.is_authenticated:
+        like_movies = user.like_movies.all()
+        if like_movies:
+            genre_dict = {'Drama' : 0, 'Thriller':0, 'Comedy': 0, 'Action': 0, 'Science Fiction': 0, 'Family': 0, 'Fantasy': 0,
+            'Animation': 0, 'Adventure': 0, 'History': 0, 'War': 0, 'Crime': 0, 'Horror': 0, 'Mystery': 0, 'Western': 0, 'Music': 0, 'Documentary': 0}
+            for like_movie in like_movies:
+                for genre in like_movie.genres.all():
+                    genre_dict[genre.name] += 1
+            genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
+            like_genres = []
+            for idx, key in enumerate(genre_dict):
+                if idx == 3:
+                    break
+                like_genres.append(key)
+            recommendation_movies = set()
+            for i in range(3):
+                recommendation_movies = recommendation_movies | set(Genre.objects.get(name=like_genres[i]).genre_movies.all())
+            import random
+            recommendation_movies = random.sample(recommendation_movies, 8)
+            context['recommendation_movies'] = recommendation_movies
+
+    return render(request, 'movies/index.html', context)
+
+def popular(request):
     movies = Movie.objects.order_by('-popularity')
     paginator = Paginator(movies, 20)
 
@@ -19,7 +48,7 @@ def index(request):
         'movies': movies,
         'page_obj': page_obj,
     }
-    return render(request, 'movies/index.html', context)
+    return render(request, 'movies/popular.html', context)
 
 @login_required
 def movie_create(request):
@@ -44,18 +73,23 @@ def movie_detail(request, movie_pk):
     lang = movie.original_language
     lang_dict = {
         'en': '영어', 'jn': '일본어', 'es': '스페인어', 'fr':'프랑스어', 'ko':'한국어', 'da': '덴마크어',
-        'pt': '포르투갈어', 'cn': '중국어', 'it': '이탈리아어', 'de': '독일어', 'id':'인도네시아어', 'hi':'힌디어',
-        'farsi':'페르시아어','ru':'러시아어', 'sv': '스웨덴어',
+        'pt': '포르투갈어', 'cn': '광동어어', 'it': '이탈리아어', 'de': '독일어', 'id':'인도네시아어', 'hi':'힌디어',
+        'farsi':'페르시아어','ru':'러시아어', 'sv': '스웨덴어', 'zh': '북경어', 'ar': '아랍어'
     }
     lang = lang_dict[lang]
-    genre = movie.genres
-    genres = []
-
+    movie_genres = movie.genres.all()
+    genre_list = []
+    genre_dict = {'Drama' : '드라마', 'Thriller':'스릴러', 'Comedy': '코미디', 'Action': '액션', 'Science Fiction': 'SF',
+    'Family': '가족', 'Fantasy': '판타지', 'Animation': '애니메이션', 'Adventure': '모험', 'History': '역사', 'War': '전쟁',
+    'Crime': '범죄', 'Horror': '공포', 'Mystery': '미스터리', 'Western': '서부영화', 'Music': '뮤지컬', 'Documentary': '다큐'}
+    for genre in movie_genres:
+        genre_list.append(genre_dict[genre.name])
     reviews_aggregate = Review.objects.filter(movie=movie).aggregate(Avg('rank'))
     context = {
         'movie': movie,
         'review_rank': reviews_aggregate['rank__avg'],
         'lang':lang,
+        'genre_list':genre_list,
     }
     return render(request, 'movies/movie_detail.html', context)
 
@@ -196,18 +230,28 @@ def review_like(request, movie_pk, review_pk):
 def search(request):
     keyword = request.GET.get('keyword')
     movies = Movie.objects.filter(Q(title__icontains=keyword)|Q(overview__icontains=keyword))
+    paginator = Paginator(movies, 20)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
         'movies': movies,
+        'page_obj': page_obj,
         'keyword': keyword,
     }
-    return render(request, 'movies/index.html', context)
+    return render(request, 'movies/popular.html', context)
 
+@login_required
 def recommendation(request):
+    user = request.user
+    if user.like_movies:
+        return redirect('movies:index')
     import random
     movies = Movie.objects.order_by('-popularity')[:100]
     random_movies = random.sample(list(movies), 20)
     context = {
         'random_movies': random_movies,
+        'count': user.like_movies.count(),
     }
     return render(request, 'movies/recommendation.html', context)
 
@@ -225,5 +269,6 @@ def like(request, movie_pk):
 
     context = {
         'liked':liked,
+        'count': user.like_movies.count(),
     }
     return JsonResponse(context)

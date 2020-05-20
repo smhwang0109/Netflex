@@ -1,0 +1,88 @@
+.main {
+  padding: 0 10px;
+  margin: 0;
+  background: black;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.row {
+  overflow:hidden;
+  width:100%;
+}
+
+.row-inner {
+  white-space: nowrap;
+  transition: 0.45s all;
+  margin: 50px 10px;
+}
+
+.tile {
+  position: relative;
+  display:inline-block;
+  margin: 0 5px;
+  transition: 0.45s all;
+  transform-origin: left center;
+}
+
+img {
+  object-fit:cover;
+
+}
+.row-inner:hover
+{
+  /*move to the left */
+  transform: translateX(calc(250px*(-0.5)/2));
+}
+
+.row-inner:hover .tile {
+
+  opacity: .3;
+
+}
+
+.row-inner:hover .tile:hover {
+  /*set opacity back to 1 */
+  transform: scale(1.5);
+  opacity: 1;
+
+}
+
+.tile:hover ~ .tile {
+  /* move tiles on the right to the right*/
+  transform: translateX(calc(250px * 0.5));
+}
+
+.link-text {
+  color: white;
+}
+
+.link-text:hover {
+  color: #6c757d;
+}
+
+
+
+.pagination > li > a
+{
+    background-color: black;
+    color: #E50914;
+}
+
+
+.pagination > .page-item > .page-link {
+  background-color: black !Important;
+}
+
+.pagination > .page-item > .page-link:hover {
+  background-color: #E50914 !Important;
+  border-color: black;
+  color: white;
+}
+
+.pagination > .page-item: active > .page-link {
+  border-color:white !Important;
+}

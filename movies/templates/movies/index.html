@@ -2,31 +2,77 @@
 {% load bootstrap4 %}
 {% load bootstrap_pagination %}
 
+{% load static %}
+
+{% block css %}
+	<link rel="stylesheet" href="{% static 'movies/css/index.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="mx-0">
-  {% if request.resolver_match.url_name == 'index' %}
-  <h1 class="mt-5 font-weight-bold">Popular on Netflex</h1>
-  {% elif request.resolver_match.url_name == 'search' %}
-  <h1 class="mt-5 font-weight-bold">'{{ keyword }}'에 대한 검색결과({{ movies.count }})</h1>
-  {% endif %}
-
-
-  <div class="container">
-    <div class="row">
-    {% for movie in page_obj %}
-      <div class="card bg-dark col-3 my-2 pt-2" style="width: 18rem; border: 10px black solid; border-radius: 25px;">
-        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">
-          <img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" class="card-img-top" alt="영화 포스터">
-        </a>
-        <div class="card-body d-flex flex-column justify-content-between">
-          <h5 class="card-title"><a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">{{ movie.title|truncatechars:20 }}</a></h5>
-          <p class="card-text"><a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">{{ movie.summary|truncatechars:55 }}</a></p>
+<div class="row">
+  <div class="col-8">
+    <h1 class="mt-5 font-weight-bold">Popular on Netflex</h1>
+  </div>
+  <div class="col-4 d-flex justify-content-end">
+    <a href="{% url 'movies:popular' %}" class="link-text text-decoration-none"><h3 class="mt-5 font-weight-bold">전체보기</h1></a>
+  </div>
+</div>
+<div class="main d-flex justify-content-center">
+  <div class="row d-flex justify-content-center">
+    <div class="row-inner">
+      {% for movie in movies|slice:":4" %}
+        <div class="tile col-3">
+            <div class="tile-media">
+              <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}"></a>
+            </div>
         </div>
-      </div>
-    {% endfor %}
-    {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
-
+      {% endfor %}
     </div>
   </div>
 </div>
+<div class="main d-flex justify-content-center">
+  <div class="row d-flex justify-content-center">
+    <div class="row-inner">
+      {% for movie in movies|slice:"4:8" %}
+        <div class="tile col-3">
+            <div class="tile-media">
+              <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}"></a>
+            </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% if user.is_authenticated%}
+{% if recommendation_movies %}
+  <h1 class="mt-5 font-weight-bold">{{ request.user }}님께 추천하는 영화</h1>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in recommendation_movies|slice:":4" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="main d-flex justify-content-center">
+    <div class="row d-flex justify-content-center">
+      <div class="row-inner">
+        {% for movie in recommendation_movies|slice:"4:8" %}
+          <div class="tile col-3">
+              <div class="tile-media">
+                <a href="{% url 'movies:movie_detail' movie.pk %}"><img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}"></a>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endif %}
 {% endblock %}
