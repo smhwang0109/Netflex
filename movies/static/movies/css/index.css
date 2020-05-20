@@ -83,6 +83,14 @@ img {
   color: white;
 }
 
+.pagination > .disabled > .page-link {
+  color: #E50914;
+}
+
 .pagination > .active > .page-link {
   border-color:white !Important;
+}
+
+.pagination > .active > .page-link:hover {
+  border-color: black!Important;;
 }
