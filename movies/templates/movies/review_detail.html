@@ -19,17 +19,17 @@
       </div>
     {% endif %}
     </div>
-    <div class="card-body bg-dark">
-      <h5 class="card-title">{{ review.title }} <small>| 작성자 : <a href="{% url 'accounts:detail' review.author.pk %}">{{ review.author.username }}</a> </small></h5>
+    <div class="card-body" style="background-color:black" >
+      <h5 class="card-title">{{ review.title }} <small>| 작성자 : <a class="text-white" href="{% url 'accounts:detail' review.author.pk %}">{{ review.author.username }}</a> </small></h5>
       <hr>
       <p class="card-text">{{ review.content | linebreaks }}</p>
       <hr>
       <!--좋아요-->
       {% with review_liker=review.like_users.all %}
       {% if request.user in review_liker %}
-        <p class="text-white"><a class="text-decoration-none" href="{% url 'movies:review_like' review.movie.pk review.pk %}"><span class="text-white btn btn-danger">좋아요 취소</span></a> {{ review_liker|length }}명이 좋아합니다.</p>
+      <button id="likeBtn" type="button" class="btn btn-danger btn-sm">좋아요 취소</button><span id="liker">{{ review_liker|length }}</span>명이 좋아합니다.
       {% else %}
-        <p class="text-white"><a class="text-decoration-none" href="{% url 'movies:review_like' review.movie.pk review.pk %}"><span class="text-white btn btn-danger">좋아요</span></a> {{ review_liker|length }}명이 좋아합니다.</p>
+      <button id="likeBtn" type="button" class="btn btn-danger btn-sm">좋아요</button><span id="liker">{{ review_liker|length }}</span>명이 좋아합니다.
       {% endif %}
       {% endwith %}
       <!--댓글 보여주기 -->
@@ -82,4 +82,28 @@
 
     </div>
   </div>
+  <script>
+    const likeButton = document.querySelector('#likeBtn')
+    likeButton.addEventListener('click', e => {
+     {% if request.user.is_authenticated %}
+      const reviewID = {{ review.pk }}
+      const movieID = {{ movie_pk }}
+      axios.get(`/movies/${movieID}/reviews/${reviewID}/like/`)
+        .then(res => {
+          if (res.data.liked) {
+            document.querySelector('#likeBtn').innerText = "좋아요 취소";
+            document.querySelector('#liker').innerText = res.data.count
+          }
+          else {
+            document.querySelector('#likeBtn').innerText = "좋아요";
+            document.querySelector('#liker').innerText = res.data.count
+          }
+        })
+    {% else %}
+    alert('로그인 하지 않으면 좋아요를 누를 수 없습니다.')
+    {% endif %}
+    })
+  </script>
+
+
   {% endblock %}

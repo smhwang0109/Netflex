@@ -65,7 +65,6 @@ img {
 }
 
 
-
 .pagination > li > a
 {
     background-color: black;
@@ -73,7 +72,10 @@ img {
 }
 
 
+
+
 .pagination > .page-item > .page-link {
+  border: none;
   background-color: black !Important;
 }
 
@@ -88,9 +90,9 @@ img {
 }
 
 .pagination > .active > .page-link {
-  border-color:white !Important;
+  border-color: white !Important;
 }
 
 .pagination > .active > .page-link:hover {
-  border-color: black!Important;;
+  border-color: black!Important;
 }

@@ -84,8 +84,13 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mb-5">
-    <a href="{% url 'movies:index' %}"><button class="btn btn-danger">그만 선택할래요</button></a>
+  <div class="row">
+    <div class="col-3 d-flex justify-content-start mb-5">
+      <a href="{% url 'movies:recommendation' %}"><button class="btn btn-danger">좋아하는 영화가 없어요</button></a>
+    </div>
+    <div class="offset-6 col-3 d-flex justify-content-end mb-5">
+      <a href="{% url 'movies:index' %}"><button class="btn btn-danger">그만 선택할래요</button></a>
+    </div>
   </div>
 </div>
 

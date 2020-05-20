@@ -155,7 +155,7 @@ urlpatterns = [
 
 ### 07. 영화 추천 서비스:star:
 
-회원가입을 할 때 좋아요 표현을 한 영화들을 대상으로 장르를 조사합니다. 그리고 선택된 `Movie`들의 `genre`가 각각 몇번 등장하는지 체크합니다. 
+- 회원가입을 할 때 좋아요 표현을 한 영화들을 대상으로 장르를 조사합니다. 그리고 선택된 `Movie`들의 `genre`가 각각 몇번 등장하는지 체크합니다. 
 
 ```python
 genre_dict = {'Drama' : 0, 'Thriller':0, 'Comedy': 0, 'Action': 0, 'Science Fiction': 0, 'Family': 0, 'Fantasy': 0,
@@ -165,7 +165,7 @@ genre_dict = {'Drama' : 0, 'Thriller':0, 'Comedy': 0, 'Action': 0, 'Science Fict
                     genre_dict[genre.name] += 1
 ```
 
- 가장 많이 등장한 3개의 `genre`를 포함하는 영화들 집합을 저장한 다음 임의로 8개를 선정해 사용자에게 보여줍니다. 
+- 가장 많이 등장한 3개의 `genre`를 포함하는 영화들 집합을 저장한 다음 임의로 8개를 선정해 사용자에게 보여줍니다. 
 
 ```python
 genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
@@ -180,6 +180,8 @@ genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
             import random
             recommendation_movies = random.sample(recommendation_movies, 12)
 ```
+
+- 다음은 
 
 <br>
 
@@ -333,9 +335,32 @@ genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
 
 <br>
 
+### 10. Recommendation 페이지
+
+- 회원가입 직후 보여주는 recommendation 페이지에서 뽑는 추천 영화는 다음과 같은 방법으로 영화를 뽑은 것입니다.
+- 먼저, `popularity`를 기준으로 영화를 100개를 뽑고, 그 이후 `random.sample`로 랜덤하게 20개의 영화를 뽑아 사용자에 보여주는 방식으로 만들었습니다.
+
+- ```python
+  @login_required
+  def recommendation(request):
+      user = request.user
+      if user.like_movies.all():
+          return redirect('movies:index')
+      import random
+      movies = Movie.objects.order_by('-popularity')[:100]
+      random_movies = random.sample(list(movies), 20)
+      context = {
+          'random_movies': random_movies,
+          'count': user.like_movies.count(),
+      }
+      return render(request, 'movies/recommendation.html', context)
+  ```
+
+  
+
+<br>
+
 ## 구현 화면
-
-
 
 ### 회원가입 화면
 
@@ -351,7 +376,9 @@ genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
 
 ### 회원가입 직후 좋아하는 영화 선택
 
-![![favorite]](https://user-images.githubusercontent.com/63289500/82437817-06bc4480-9ad3-11ea-9f9f-245d3c7f39cb.JPG)
+![capture-9976903](images/README/capture-9976903.png)
+
+![capture-9976917](images/README/capture-9976917.png)
 
 
 
@@ -383,7 +410,27 @@ genre_dict = dict(reversed(sorted(genre_dict.items(), key=lambda g : g[1])))
 
 
 
-### 영화 상세 페이지
+### 영화 상세 페이지 (리뷰 없을 시)
 
 ![capture-9973995](images/README/capture-9973995.png)
+
+
+
+### 영화 상세 페이지 (리뷰 있을 시)
+
+![capture-9979345](images/README/capture-9979345.png)
+
+
+
+### Popular  (+ Pagination)
+
+![capture-9976805](images/README/capture-9976805.png)
+
+![capture-9976821](images/README/capture-9977837.png)
+
+
+
+### 리뷰 페이지
+
+![capture-9977485](images/README/capture-9977485.png)
 

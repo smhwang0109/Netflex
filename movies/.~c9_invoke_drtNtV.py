@@ -222,22 +222,13 @@ def comment_delete(request, movie_pk, review_pk, comment_pk):
         comment.delete()
     return redirect('movies:review_detail', movie_pk, review_pk)
 
-@login_required
 def review_like(request, movie_pk, review_pk):
-    user = request.user
     review = get_object_or_404(Review, pk=review_pk)
     if review.like_users.filter(id=request.user.pk).exists():
         review.like_users.remove(request.user)
-        liked = False
     else:
         review.like_users.add(request.user)
-        liked = True
-
-    context = {
-        'liked':liked,
-        'count': review.like_users.count(),
-    }
-    return JsonResponse(context)
+    return redirect('movies:review_detail', movie_pk, review_pk)
 
 def search(request):
     keyword = request.GET.get('keyword')
@@ -281,6 +272,6 @@ def like(request, movie_pk):
 
     context = {
         'liked':liked,
-        'count': movie.like_users.count(),
+        'count': user.like_movies.count(),
     }
     return JsonResponse(context)
