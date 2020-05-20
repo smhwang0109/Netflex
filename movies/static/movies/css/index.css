@@ -83,6 +83,6 @@ img {
   color: white;
 }
 
-.pagination > .page-item: active > .page-link {
+.pagination > .active > .page-link {
   border-color:white !Important;
 }
