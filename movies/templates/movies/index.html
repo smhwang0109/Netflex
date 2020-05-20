@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load bootstrap_pagination %}
+
+{% block content %}
+<div class="mx-0">
+  {% if request.resolver_match.url_name == 'index' %}
+  <h1 class="mt-5 font-weight-bold">Popular on Netflex</h1>
+  {% elif request.resolver_match.url_name == 'search' %}
+  <h1 class="mt-5 font-weight-bold">'{{ keyword }}'에 대한 검색결과({{ movies.count }})</h1>
+  {% endif %}
+
+
+  <div class="container">
+    <div class="row">
+    {% for movie in page_obj %}
+      <div class="card bg-dark col-3 my-2 pt-2" style="width: 18rem; border: 10px black solid; border-radius: 25px;">
+        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">
+          <img src="https://image.tmdb.org/t/p/w185/{{ movie.poster_path }}" class="card-img-top" alt="영화 포스터">
+        </a>
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h5 class="card-title"><a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">{{ movie.title|truncatechars:20 }}</a></h5>
+          <p class="card-text"><a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none text-light">{{ movie.summary|truncatechars:55 }}</a></p>
+        </div>
+      </div>
+    {% endfor %}
+    {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

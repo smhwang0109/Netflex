@@ -1,0 +1,17 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Nanum Gothic', sans-serif;
+}
+.navbar {
+  background-color: transparent;
+}
+.logo {
+  color: #E50914;
+  font-size: 2rem;
+  font-family: 'Sunflower', sans-serif;
+  margin: 0;
+}
+.card-header, .btn-danger, .card-footer{
+  background-color: #E50914;
+}

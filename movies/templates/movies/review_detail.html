@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load bootstrap4 %}
+
+{% block content %}
+  <div class="card border-0">
+    <div class="card-header text-white d-flex justify-content-between align-items-center">
+      <h4>{{ review.movie.title }}<span class="badge badge-dark mx-3"><svg class="bi bi-star-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>{{ review.rank }}</span></h4>
+    <!--게시글 수정 및 삭제 기능 -->
+    {% if request.user == review.author %}
+      <div class="btn-group" role="group">
+        <a href="{% url 'movies:review_update' review.movie.pk review.pk %}"><button class="btn btn-dark mx-3 btn-sm" >수정</button></a>
+        <form action="{% url 'movies:review_delete' review.movie.pk review.pk %}" method="POST">
+          {% csrf_token %}
+          <button class="btn btn-dark btn-sm" >삭제</button>
+        </form>
+      </div>
+    {% endif %}
+    </div>
+    <div class="card-body bg-dark">
+      <h5 class="card-title">{{ review.title }} <small>| 작성자 : <a href="{% url 'accounts:detail' review.author.pk %}">{{ review.author.username }}</a> </small></h5>
+      <hr>
+      <p class="card-text">{{ review.content | linebreaks }}</p>
+      <hr>
+      <!--좋아요-->
+      {% with review_liker=review.like_users.all %}
+      {% if request.user in review_liker %}
+        <p class="text-white"><a class="text-decoration-none" href="{% url 'movies:review_like' review.movie.pk review.pk %}"><span class="text-white btn btn-danger">좋아요 취소</span></a> {{ review_liker|length }}명이 좋아합니다.</p>
+      {% else %}
+        <p class="text-white"><a class="text-decoration-none" href="{% url 'movies:review_like' review.movie.pk review.pk %}"><span class="text-white btn btn-danger">좋아요</span></a> {{ review_liker|length }}명이 좋아합니다.</p>
+      {% endif %}
+      {% endwith %}
+      <!--댓글 보여주기 -->
+      <h6>댓글</h6>
+      {% for comment in review.review_comments.all %}
+        {% if request.resolver_match.url_name == 'review_detail' %}
+        <div class="input-group p-auto">
+          <p class="mb-0 mr-3">{{ comment.author.username }}: {{ comment.content }}</p>
+          {% if request.user == comment.author %}
+            <!--댓글 수정 -->
+            <form class="form-inline" action="{% url 'movies:comment_update' review.movie.pk review.pk comment.pk %}" method="GET">
+              {% csrf_token %}
+              <button class="btn btn-danger btn-sm mr-2">수정</button>
+            </form>
+
+            <!--댓글 삭제 -->
+            <form class="form-inline" action="{% url 'movies:comment_delete' review.movie.pk review.pk comment.pk %}" method="POST" >
+              {% csrf_token %}
+              <div class="input-group-append">
+                <button class="btn btn-danger btn-sm">삭제</button>
+              </div>
+            </form>
+          {% endif %}
+        </div>
+        <!-- 댓글 수정을 눌렀을 때 -->
+        {% elif request.resolver_match.url_name == 'comment_update' %}
+          <form class="" action="{% url 'movies:comment_update' review.movie.pk review.pk comment.pk %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form comment_form %}
+            <button type="submit" class="btn btn-danger btn-sm offset-10 col-2">수정</button>
+          </form>
+        {% endif %}
+        <hr>
+      {% endfor %}
+      <!-- 댓글 작성란 -->
+
+      {% if request.resolver_match.url_name != 'comment_update' %}
+        {% if request.user.is_authenticated %}
+          <form class="" action="{% url 'movies:comment_create' review.movie.pk review.pk %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form comment_form %}
+            <button type="submit" class="btn btn-danger offset-10 col-2">댓글 작성</button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="card-footer">
+      <p class="text-white d-inline mx-3">Created at: {{ review.created_at }}</p>
+      <p class="mb-0 text-white d-inline">Updated at: {{ review.updated_at }}</p>
+
+    </div>
+  </div>
+  {% endblock %}
