@@ -244,7 +244,7 @@ def search(request):
 @login_required
 def recommendation(request):
     user = request.user
-    if movie.like_users.filter(pk=user.pk).exists():
+    if user.like_movies.all():
         return redirect('movies:index')
     import random
     movies = Movie.objects.order_by('-popularity')[:100]
