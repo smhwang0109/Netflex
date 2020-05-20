@@ -19,7 +19,8 @@ def index(request):
         like_movies = user.like_movies.all()
         if like_movies:
             genre_dict = {'Drama' : 0, 'Thriller':0, 'Comedy': 0, 'Action': 0, 'Science Fiction': 0, 'Family': 0, 'Fantasy': 0,
-            'Animation': 0, 'Adventure': 0, 'History': 0, 'War': 0, 'Crime': 0, 'Horror': 0, 'Mystery': 0, 'Western': 0, 'Music': 0, 'Documentary': 0}
+            'Animation': 0, 'Adventure': 0, 'History': 0, 'War': 0, 'Crime': 0, 'Horror': 0, 'Mystery': 0, 'Western': 0, 'Music': 0,
+            'Documentary': 0,'Romance': 0, 'TV Movie': 0}
             for like_movie in like_movies:
                 for genre in like_movie.genres.all():
                     genre_dict[genre.name] += 1
@@ -81,7 +82,8 @@ def movie_detail(request, movie_pk):
     genre_list = []
     genre_dict = {'Drama' : '드라마', 'Thriller':'스릴러', 'Comedy': '코미디', 'Action': '액션', 'Science Fiction': 'SF',
     'Family': '가족', 'Fantasy': '판타지', 'Animation': '애니메이션', 'Adventure': '모험', 'History': '역사', 'War': '전쟁',
-    'Crime': '범죄', 'Horror': '공포', 'Mystery': '미스터리', 'Western': '서부영화', 'Music': '뮤지컬', 'Documentary': '다큐'}
+    'Crime': '범죄', 'Horror': '공포', 'Mystery': '미스터리', 'Western': '서부영화', 'Music': '뮤지컬', 'Documentary': '다큐',
+    'Romance': '로맨스', 'TV Movie': 'TV영화'}
     for genre in movie_genres:
         genre_list.append(genre_dict[genre.name])
     reviews_aggregate = Review.objects.filter(movie=movie).aggregate(Avg('rank'))
