@@ -44,7 +44,8 @@ def movie_detail(request, movie_pk):
     lang = movie.original_language
     lang_dict = {
         'en': '영어', 'jn': '일본어', 'es': '스페인어', 'fr':'프랑스어', 'ko':'한국어', 'da': '덴마크어',
-        'pt': '포르투갈어', 'cn': '중국어', 'it': '이탈리아어', 'de': '독일어',
+        'pt': '포르투갈어', 'cn': '중국어', 'it': '이탈리아어', 'de': '독일어', 'id':'인도네시아어', 'hi':'힌디어',
+        'farsi':'페르시아어','ru':'러시아어', 'sv': '스웨덴어',
     }
     lang = lang_dict[lang]
     genre = movie.genres
